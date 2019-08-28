@@ -459,6 +459,8 @@ static int ctap_make_auth_data(struct rpId * rp, CborEncoder * map, uint8_t * au
         exit(1);
     }
 
+    printf1(TAG_GREEN, "Website URL: %s \r\n", rp->id);
+
     crypto_sha256_init();
     crypto_sha256_update(rp->id, rp->size);
     crypto_sha256_final(authData->head.rpIdHash);
@@ -535,17 +537,12 @@ static int ctap_make_auth_data(struct rpId * rp, CborEncoder * map, uint8_t * au
 done_rk:
 
         printf1(TAG_GREEN, "MADE credId: "); dump_hex1(TAG_GREEN, (uint8_t*) &authData->attest.id, sizeof(CredentialId));
-
         ctap_generate_cose_key(&cose_key, (uint8_t*)&authData->attest.id, sizeof(CredentialId), credInfo->publicKeyCredentialType, credInfo->COSEAlgorithmIdentifier);
 
         auth_data_sz = sizeof(CTAP_authData) + cbor_encoder_get_buffer_size(&cose_key, cose_key_buf);
 
     }
-
-
-
-
-
+    
     *len = auth_data_sz;
     return 0;
 }
